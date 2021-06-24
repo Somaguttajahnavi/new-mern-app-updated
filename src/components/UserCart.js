@@ -21,7 +21,7 @@ function UserCart(){
                        </tr>
                    )
                </tbody>
-                   </table> */}
+                   </table> // */}
         </div>
     )
 }
