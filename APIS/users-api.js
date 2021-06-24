@@ -4,6 +4,7 @@ const userApi=exp.Router();
 const expressErrorHandler=require("express-async-handler")
 const multerObj=require("./middlewares/addfile")
 const checkToken=require('./middlewares/verifyToken')
+require('dotenv').config()
 
 
 //bycrypt
@@ -116,7 +117,7 @@ else{
     //if passwords are matched
     else{
         //create a token and send it as result
-        let token=await jwt.sign({username:credentials.username},'abcdef',{expiresIn:120})
+        let token=await jwt.sign({username:credentials.username},process.env.SECRET,{expiresIn:120})
 
         //remove password from user
         delete user.password;
@@ -124,6 +125,39 @@ else{
     }
 
 }
+}))
+
+//add to cart
+userApi.post("/addtocart",expressErrorHandler(async(req,res,next)=>{
+    let userCartCollectionObject=req.app.get("userCartCollectionObject")
+
+    //get user cart obj
+    let userCartObj=req.body;
+    //find user in userCartCollection
+    let userInCart=await userCartCollectionObject.findOne({username:userCartObj.username})
+
+    //if user not existed in cart
+    if(userInCart===null){
+        //new usercartobject
+        let products=[];
+        products.push(userCartObj.productObj)
+        let newUserCartObject={username:userCartObj.username,products:products};
+       // console.log(newUserCartObject)
+
+        //insert
+        await userCartCollectionObject.insertOne(newUserCartObject)
+        res.send({message:"product added to cart"})
+    }
+    //if user already existed in cart
+    else{
+        userInCart.products.push(userCartObj.productObj)
+        //console.log(userInCart)
+        
+        //update
+        await userCartCollectionObject.updateOne({username:userCartObj.username},{$set:{...userInCart}})
+        res.send({message:"product updated"})
+
+    }
 }))
 
 //protected dummy route

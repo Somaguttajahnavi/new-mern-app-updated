@@ -2,6 +2,7 @@
 const exp=require('express')
 const app=exp();
 const path=require("path")
+require('dotenv').config()
 
 //connecting build of react with current server
 app.use(exp.static(path.join(__dirname,'./build/')))
@@ -23,7 +24,7 @@ const mongoClient=require("mongodb").MongoClient;
 
 
 //db connection url
-const dburl="mongodb+srv://jahnavi:304409@cluster0.raafu.mongodb.net/cdb003db?retryWrites=true&w=majority"
+const dburl=process.env.DATABASE_URL;
 
 //connect with mongodb server
 mongoClient.connect(dburl,{useNewUrlParser:true,useUnifiedTopology:true},(err,client)=>{
@@ -36,11 +37,13 @@ mongoClient.connect(dburl,{useNewUrlParser:true,useUnifiedTopology:true},(err,cl
         let userCollectionObject = databaseObject.collection("usercollection")
         let adminCollectionObject = databaseObject.collection("admincollection")
         let productCollectionObject = databaseObject.collection("productcollection")
+        let userCartCollectionObject=databaseObject.collection("usercartcollection")
 
         //sharing collection objects
         app.set("userCollectionObject",userCollectionObject)
         app.set("adminCollectionObject",adminCollectionObject)
         app.set("productCollectionObject",productCollectionObject)
+        app.set("userCartCollectionObject",userCartCollectionObject)
 
 
         console.log("db connection success")
@@ -73,5 +76,5 @@ app.use((err,req,res,next)=>{
 
 
 //assign port
-const port=8080;
+const port=process.env.PORT;
 app.listen(port,()=>console.log(`server listening on port ${port}... `))

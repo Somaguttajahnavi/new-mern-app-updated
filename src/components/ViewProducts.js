@@ -186,7 +186,7 @@ export default function ViewProducts(){
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 
-function ViewProducts() {
+function ViewProducts(props) {
 
     const [products, setProducts] = useState('')
 
@@ -213,6 +213,7 @@ function ViewProducts() {
                                 <div class="card-body">
                                     <h5 class="card-title">{product.productname}</h5>
                                     <p class="card-text">{product.description}</p>
+                                    <button className="btn btn-primary float-end" onClick={()=>props.addProductToCart(product)}>Add to cart</button>
                                 </div>
                             </div>
                         </div>
