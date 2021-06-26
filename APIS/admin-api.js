@@ -22,7 +22,7 @@ adminApi.post("/login",expressErrorHandler(async(req,res,next)=>{
          }
      else{
          //create a token and send it as result
-         let token= await jwt.sign({username:credentials.username},'abcdef',{expiresIn:120})
+         let token= await jwt.sign({username:credentials.username},process.env.SECRET,{expiresIn:120})
          //remove password from user
          delete user.password;
          res.send({

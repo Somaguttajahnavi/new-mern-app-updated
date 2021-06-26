@@ -1,72 +1,62 @@
-import React from 'react'
-import {useParams} from 'react-router-dom'
-//import axios from 'axios'
-import { useEffect,useState } from 'react'
+
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import axios from 'axios'
 import ViewProducts from './ViewProducts';
 import {
-  BrowserRouter,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom"
-import UserCart from "./UserCart"
-import axios from 'axios';
+    BrowserRouter,
+    Switch,
+    Route,
+    Link
+} from "react-router-dom";
+import UserCart from './UserCart'
 
 
-export default function UserProfile(){
-    let [user,setUser]=useState('');
-    let [usercart,setUserCart]=useState('');
-    let [products,setProducts]=useState('');
-    let [productObj,setProductObj]=useState('')
-    const [cartObj,setCartObj]=useState('')
-    let [cartProduct,setCartProduct]=useState('')
+function UserProfile() {
 
-    useEffect(()=>{
-      let username=localStorage.getItem("username")
-      axios.get(`/user/getproducts/${username}`)
-      .then(res=>{
-        setCartObj(res.data.message)
-        //console.log(res.data.message)
-      })
-      .catch(err=>{
-        console.log("err in reading cart",err)
-        alert("something went wrong in getting cart")
-      })
-    },[productObj.model])
-    
-    //function to make post to usercart api
-    const addProductToCart=(productObj)=>{
-      //get username from localstorage
-      let username=localStorage.getItem("username")
+    let [productObj, setProductObj] = useState('')
+    let [user, setUser] = useState('')
 
-      
+console.log("produ obj",productObj)
+    const [cartObj, setCartObj] = useState('')
 
-      let newObj={username,productObj}
-      console.log("product added by user",newObj)
-      //add username to product object
-     // productObj.username=username;
-     // console.log("product added to cart",productObj)
-      //make post req
-      axios.post("/user/addtocart",newObj)
-      .then(res=>{
-      let  responseObj=res.data
-        alert(responseObj.message)
-      })
-      .catch(err=>{
-        console.log("err in adding to cart",err)
-        alert("something went wrong")
-      })
+    useEffect(() => {
+        let username = localStorage.getItem("username")
+
+        axios.get(`/user/getproducts/${username}`)
+            .then(res => {
+                setCartObj(res.data.message)
+                console.log(res.data.message)
+            })
+            .catch(err => {
+                console.log("err in reading cart", err)
+                alert("Something went wrong in getting cart")
+            })
+
+    }, [productObj.model])
+
+
+    //function to make post tp usercart api
+    const addProductToCart = (productObj) => {
+        //get username from localstorage
+        let username = localStorage.getItem("username")
+        //add username to product object
+        //  productObj.username = username;
+        let newObj = { username, productObj }
+
+        console.log("product added by user ", newObj)
+        // make post req
+        axios.post("/user/addtocart", newObj)
+            .then(res => {
+                let responceObj = res.data
+                setProductObj(productObj)
+                alert(responceObj.message)
+            })
+            .catch(err => {
+                console.log("err in adding to cart", err)
+                alert("Something went wrong")
+            })
     }
-
-    ////////
-    const cartProducts=()=>{
-      let username=localStorage.getItem("username");
-      axios.get(`/user/getCart/${username}`)
-      .then(res=>{
-        setCartProduct(res.data.product)
-      })
-    }
-    /////
 
 
 
@@ -105,18 +95,19 @@ export default function UserProfile(){
        
 
            <li className="nav-item">
-               <Link to="/view-products" className="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" >View products</Link>
+               <Link to="/view-products" className="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show" ><h2>View products</h2></Link>
            </li>
 
            <li className="nav-item">
-           <Link to="/user-cart" className="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show">cart</Link>
+           <Link to="/user-cart" className="nav-link" data-bs-toggle="collapse" data-bs-target=".navbar-collapse.show"><h2>cart</h2><span className="badge bg-info m-1 text-dark">{cartObj && cartObj.products.length} </span></Link>
            </li>
        </ul>
 
        <Switch>
 
        <Route path="/user-cart">
-           <UserCart cartProducts={cartProducts}/>
+          
+           <UserCart cartObj={cartObj} setCartObj={setCartObj} />
        </Route>
 
        <Route path="/view-products">
@@ -132,4 +123,6 @@ export default function UserProfile(){
 
     )
 }
+
+export default UserProfile;
 

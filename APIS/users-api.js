@@ -161,13 +161,26 @@ userApi.post("/addtocart",expressErrorHandler(async(req,res,next)=>{
 }))
 
 //get users product from cart
-userApi.get("/getcart/:username",expressErrorHandler(async(req,res,next)=>{
+/*userApi.get("/getcart/:username",expressErrorHandler(async(req,res,next)=>{
     //get usercartcollection objet
      let userCartCollectionObject=req.app.get("userCartCollectionObject")
      let cartList = await userCartCollectionObject.findOne({username:req.params.username});
      console.log(cartList);
      res.send(cartList);
+}))*/
+
+//////
+//get products
+userApi.get("/getproducts/:username", expressErrorHandler(async (req, res, next) => {
+
+    let userCartCollectionObject = req.app.get("userCartCollectionObject")
+
+    let un = req.params.username;
+    let cartObj = await userCartCollectionObject.findOne({ username: un })
+
+    res.send({ message: cartObj })
 }))
+
 
 //protected dummy route
 userApi.get("/testing",checkToken,expressErrorHandler((req,res)=>{
