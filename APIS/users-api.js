@@ -160,6 +160,15 @@ userApi.post("/addtocart",expressErrorHandler(async(req,res,next)=>{
     }
 }))
 
+//get users product from cart
+userApi.get("/getcart/:username",expressErrorHandler(async(req,res,next)=>{
+    //get usercartcollection objet
+     let userCartCollectionObject=req.app.get("userCartCollectionObject")
+     let cartList = await userCartCollectionObject.findOne({username:req.params.username});
+     console.log(cartList);
+     res.send(cartList);
+}))
+
 //protected dummy route
 userApi.get("/testing",checkToken,expressErrorHandler((req,res)=>{
     res.send({message:"this is protected data"})

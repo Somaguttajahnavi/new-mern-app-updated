@@ -17,11 +17,29 @@ export default function UserProfile(){
     let [user,setUser]=useState('');
     let [usercart,setUserCart]=useState('');
     let [products,setProducts]=useState('');
+    let [productObj,setProductObj]=useState('')
+    const [cartObj,setCartObj]=useState('')
+    let [cartProduct,setCartProduct]=useState('')
+
+    useEffect(()=>{
+      let username=localStorage.getItem("username")
+      axios.get(`/user/getproducts/${username}`)
+      .then(res=>{
+        setCartObj(res.data.message)
+        //console.log(res.data.message)
+      })
+      .catch(err=>{
+        console.log("err in reading cart",err)
+        alert("something went wrong in getting cart")
+      })
+    },[productObj.model])
     
     //function to make post to usercart api
     const addProductToCart=(productObj)=>{
       //get username from localstorage
       let username=localStorage.getItem("username")
+
+      
 
       let newObj={username,productObj}
       console.log("product added by user",newObj)
@@ -39,6 +57,16 @@ export default function UserProfile(){
         alert("something went wrong")
       })
     }
+
+    ////////
+    const cartProducts=()=>{
+      let username=localStorage.getItem("username");
+      axios.get(`/user/getCart/${username}`)
+      .then(res=>{
+        setCartProduct(res.data.product)
+      })
+    }
+    /////
 
 
 
@@ -88,7 +116,7 @@ export default function UserProfile(){
        <Switch>
 
        <Route path="/user-cart">
-           <UserCart/>
+           <UserCart cartProducts={cartProducts}/>
        </Route>
 
        <Route path="/view-products">
