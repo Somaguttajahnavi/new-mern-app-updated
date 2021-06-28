@@ -203,13 +203,13 @@ function ViewProducts(props) {
 
 
     return (
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 ">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4  ms-3">
             {products &&
                 products.map((product, index) => {
                     return (
-                        <div class="col" key={index}>
-                            <div class="card">
-                                <img src={product.productImage} width="200px" height="200px" class="card-img-top" alt="..." />
+                        <div class="col " key={index}>
+                            <div class="card border border-danger"  style={{ width: "300px", lineHeight: "3px" }} >
+                                <img src={product.productImage} width="150px" height="500px" class="card-img-top" alt="..." />
                                 <div class="card-body">
                                     <h5 class="card-title">{product.productname}</h5>
                                     <p class="card-text">{product.description}</p>
